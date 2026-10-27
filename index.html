@@ -1,1 +1,971 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jean Dupont - Portfolio Exceptionnel</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Font Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            accent: '#ec4899',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 3s ease-in-out infinite alternate',
+                        'shimmer': 'shimmer 2.5s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            '0%': { filter: 'drop-shadow(0 0 15px rgba(99, 102, 241, 0.5))' },
+                            '100%': { filter: 'drop-shadow(0 0 30px rgba(236, 72, 153, 0.8))' }
+                        },
+                        shimmer: {
+                            '100%': { transform: 'translateX(100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.8);
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.125);
+        }
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .light .glass-card {
+            background: rgba(241, 245, 249, 0.6);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Gradient Borders */
+        .gradient-border {
+            position: relative;
+            border-radius: 1.5rem;
+        }
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 1.5rem;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(99,102,241,0.6), rgba(236,72,153,0.4), rgba(6,182,212,0.6));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Animated Mesh Background */
+        .mesh-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .mesh-ball {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.45;
+            animation: float 10s ease-in-out infinite alternate;
+        }
+
+        /* 3D Container Tilt Effect */
+        .tilt-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        .tilt-element {
+            transform: translateZ(30px);
+        }
+        
+        /* Particle Burst Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Radial Glow */
+        .radial-glow {
+            background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen relative overflow-x-hidden transition-colors duration-500">
+
+    <!-- Interactive Background Canvas for Stars/Particles -->
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Canvas for Particle Bursts (Confetti/Hearts) -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Ambient Mesh Glows -->
+    <div class="mesh-bg pointer-events-none">
+        <div class="mesh-ball w-96 h-96 bg-brand-500 top-[-10%] left-[-10%] animation-delay-0"></div>
+        <div class="mesh-ball w-[30rem] h-[30rem] bg-brand-accent top-[40%] right-[-15%] animation-delay-2000"></div>
+        <div class="mesh-ball w-80 h-80 bg-brand-cyan bottom-[-10%] left-[20%] animation-delay-4000"></div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Header Controls (Theme, Sound, Share) -->
+    <header class="relative z-20 max-w-5xl mx-auto px-4 pt-6 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-brand-accent flex items-center justify-center font-bold text-white shadow-lg shadow-brand-500/30">
+                JD
+            </div>
+            <span class="font-bold tracking-tight text-lg bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                Portfolio<span class="text-brand-500">.io</span>
+            </span>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="p-2.5 rounded-xl glass-panel hover:bg-slate-800/80 text-slate-300 hover:text-white transition-all shadow-md active:scale-95" title="Changer de thème">
+                <i data-lucide="sun" class="w-5 h-5 hidden dark:block text-amber-400"></i>
+                <i data-lucide="moon" class="w-5 h-5 block dark:hidden text-indigo-600"></i>
+            </button>
+
+            <!-- Audio Toggle -->
+            <button id="audio-toggle" class="p-2.5 rounded-xl glass-panel hover:bg-slate-800/80 text-slate-300 hover:text-white transition-all shadow-md active:scale-95" title="Effets Sonores">
+                <i data-lucide="volume-2" id="audio-icon-on" class="w-5 h-5 text-brand-cyan"></i>
+                <i data-lucide="volume-x" id="audio-icon-off" class="w-5 h-5 text-slate-500 hidden"></i>
+            </button>
+
+            <!-- Share Button -->
+            <button id="btn-share-main" class="px-4 py-2.5 rounded-xl glass-panel hover:bg-slate-800/80 text-slate-200 font-medium text-sm flex items-center gap-2 transition-all active:scale-95">
+                <i data-lucide="share-2" class="w-4 h-4 text-brand-accent"></i>
+                <span class="hidden sm:inline">Partager</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container with 3D Tilt Card Effect -->
+    <main class="relative z-10 max-w-5xl mx-auto px-4 py-8 flex flex-col items-center justify-center">
+        
+        <!-- Main Card Wrapper -->
+        <div id="main-card" class="w-full glass-panel gradient-border rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ease-out tilt-card">
+            
+            <!-- Top Banner with Dynamic Mesh Gradient -->
+            <div class="relative h-48 sm:h-64 overflow-hidden bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900">
+                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-500/40 via-transparent to-transparent"></div>
+                
+                <!-- Floating Animated Shapes inside Banner -->
+                <div class="absolute top-8 left-12 w-24 h-24 rounded-full bg-brand-cyan/20 blur-xl animate-pulse"></div>
+                <div class="absolute top-16 right-20 w-32 h-32 rounded-full bg-brand-accent/20 blur-2xl animate-pulse-slow"></div>
+
+                <!-- Code Background Watermark -->
+                <div class="absolute inset-0 opacity-10 font-mono text-xs p-4 select-none pointer-events-none text-brand-cyan leading-relaxed">
+                    const developer = { name: "Jean Dupont", role: "Fullstack Architect", status: "Available", stack: ["React", "TypeScript", "Tailwind", "Node.js", "AI"] };
+                    function createMagic() { return developer.stack.map(tech => innovate(tech)); }
+                    // Continuous Innovation Loop initialized...
+                </div>
+
+                <!-- Badge Overlay -->
+                <div class="absolute top-4 right-4 flex items-center gap-2 bg-slate-950/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-xs font-semibold text-emerald-400">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    Disponible pour nouveaux projets
+                </div>
+            </div>
+
+            <!-- Profile Info Container -->
+            <div class="px-6 sm:px-10 pb-8 pt-0 relative">
+                
+                <!-- Avatar & Status Section -->
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 -mt-16 sm:-mt-20 mb-6">
+                    <div class="relative group inline-block">
+                        <!-- Glowing Ring -->
+                        <!-- Avatar Shell -->
+
+                        <div class="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-slate-900 p-1.5 ring-4 ring-slate-950 shadow-2xl">
+                            <div class="w-full h-full rounded-full bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white text-3xl sm:text-4xl font-extrabold shadow-inner relative overflow-hidden">
+
+                                <span class="relative z-10 tracking-wider">JD</span>
+
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Online Status Badge -->
+                        <div class="absolute bottom-2 right-2 w-6 h-6 rounded-full bg-slate-950 p-1 flex items-center justify-center shadow-lg" title="En ligne">
+
+                            <div class="w-full h-full rounded-full bg-emerald-500 animate-pulse"></div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- Action Buttons Bar -->
+
+                    <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+
+                        <!-- Like Button with Counter -->
+
+                        <button id="btn-like" class="flex-1 sm:flex-none px-5 py-3 rounded-2xl glass-card hover:bg-rose-500/10 hover:border-rose-500/40 text-slate-200 font-semibold text-sm flex items-center justify-center gap-2.5 transition-all active:scale-95 group">
+
+                            <i data-lucide="heart" id="like-icon" class="w-5 h-5 text-rose-500 group-hover:scale-125 transition-transform duration-300"></i>
+
+                            <span>J'aime</span>
+                            <span id="like-count" class="bg-rose-500/20 text-rose-300 text-xs px-2 py-0.5 rounded-full font-mono">128</span>
+
+                        </button>
+
+                        <!-- Follow Button -->
+                        <button id="btn-follow" class="flex-1 sm:flex-none px-5 py-3 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-500/25 active:scale-95">
+                            <i data-lucide="user-plus" id="follow-icon" class="w-4 h-4"></i>
+                            <span id="follow-text">Suivre</span>
+                        </button>
+
+
+                        <!-- Contact Modal Trigger -->
+
+                        <button id="btn-open-contact" class="flex-1 sm:flex-none px-6 py-3 rounded-2xl bg-gradient-to-r from-brand-accent to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-accent/25 active:scale-95">
+                            <i data-lucide="message-square" class="w-4 h-4"></i>
+                            <span>Contacter</span>
+
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- User Meta & Bio -->
+
+                <div class="mb-8">
+                    <div class="flex flex-wrap items-center gap-3 mb-2">
+                        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Jean Dupont</h1>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-300 border border-brand-500/30">
+
+                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand-cyan"></i>
+                            Vérifié
+                        </span>
+                    </div>
+
+                    <p class="text-brand-cyan font-mono text-sm sm:text-base mb-3 flex items-center gap-2">
+
+                        <i data-lucide="code" class="w-4 h-4"></i>
+                        Architecte Senior UI/UX & Développeur Fullstack
+                    </p>
+
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-3xl mb-4">
+                        Passionné par la création d'expériences web immersives, de systèmes haute performance et d'interfaces futuristes. J'associe le design raffiné avec des architectures robustes en Node.js, React, et TypeScript.
+                    </p>
+
+                    <!-- Quick Details Tags -->
+                    <div class="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-400">
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-rose-400"></i> Paris, France
+                <!-- Stats Dashboard Component -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                        <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono mb-1 counter" data-target="42">0</div>
+
+                    <div class="glass-card p-4 rounded-2xl text-center relative overflow-hidden group">
+                        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-brand-accent/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                        <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono mb-1 counter" data-target="1250">0</div>
+                        <div class="text-xs text-slate-400 font-medium">Abonnés</div>
+
+                    <div class="glass-card p-4 rounded-2xl text-center relative overflow-hidden group">
+                        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-brand-cyan/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                        <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono mb-1 counter" data-target="99.4">0</div>
+                        <div class="text-xs text-slate-400 font-medium">% Score Satisf.</div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-2xl text-center relative overflow-hidden group">
+                        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-emerald-500/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                        <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono mb-1 counter" data-target="15">0</div>
+                        <div class="text-xs text-slate-400 font-medium">Récompenses UI</div>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="border-b border-slate-800 mb-6">
+                    </div>
+                    <nav class="flex gap-6 overflow-x-auto pb-1" id="tab-nav">
+                    </div>
+                        <button data-tab="tab-projects" class="tab-btn pb-3 text-sm font-semibold text-brand-500 border-b-2 border-brand-500 flex items-center gap-2 whitespace-nowrap transition-all">
+                            <i data-lucide="folder-git-2" class="w-4 h-4"></i> Projets Récents
+                        <div class="text-xs text-slate-400 font-medium">Projets Livrés</div>
+                        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-brand-500/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="glass-card p-4 rounded-2xl text-center relative overflow-hidden group">
+                        </span>
+                        </button>
+                        <span class="flex items-center gap-1.5">
+                        </span>
+                        <button data-tab="tab-skills" class="tab-btn pb-3 text-sm font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-2 whitespace-nowrap transition-all">
+                </div>
+
+                            <i data-lucide="cpu" class="w-4 h-4"></i> Compétences & Stack
+                        </span>
+                    </div>
+                            <i data-lucide="calendar" class="w-4 h-4 text-emerald-400"></i> +8 ans d'exp.
+                        <span class="flex items-center gap-1.5">
+                        </button>
+                        <button data-tab="tab-experience" class="tab-btn pb-3 text-sm font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-2 whitespace-nowrap transition-all">
+                            <i data-lucide="briefcase" class="w-4 h-4 text-amber-400"></i> Freelance / Lead Tech
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="globe" class="w-4 h-4 text-brand-cyan"></i> remote-friendly
+
+                            <i data-lucide="history" class="w-4 h-4"></i> Expérience
+
+                        </button>
+
+                        <button data-tab="tab-reviews" class="tab-btn pb-3 text-sm font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-2 whitespace-nowrap transition-all">
+
+                            <i data-lucide="star" class="w-4 h-4"></i> Recommandations
+
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Tab Contents -->
+                <div id="tab-contents">
+                    
+                    <!-- TAB 1: Projects -->
+                    <div id="tab-projects" class="tab-pane block space-y-4">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <!-- Project Card 1 -->
+
+                            <div class="glass-card p-5 rounded-2xl group hover:border-brand-500/50 transition-all">
+                                <div class="flex justify-between items-start mb-3">
+
+                                    <div class="p-3 rounded-xl bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-all">
+                                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+
+                                    </div>
+                                    <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-slate-800 text-brand-cyan border border-slate-700">React + WebGL</span>
+                                </div>
+
+                                <h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-500 transition-colors">CyberDash AI Platform</h3>
+                                <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mb-4">Dashboard interactif de monitoring temps réel avec visualisations 3D et moteurs prédictifs.</p>
+                                <div class="flex items-center justify-between text-xs pt-3 border-t border-slate-800/80">
+
+                                    <span class="text-slate-500 flex items-center gap-1"><i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i> 4.9 (48 votes)</span>
+                                    <a href="#" class="text-brand-500 font-semibold hover:underline flex items-center gap-1">Découvrir <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
+
+                                </div>
+                            </div>
+
+
+                            <!-- Project Card 2 -->
+
+                            <div class="glass-card p-5 rounded-2xl group hover:border-brand-accent/50 transition-all">
+                                <div class="flex justify-between items-start mb-3">
+
+                                    <div class="p-3 rounded-xl bg-pink-500/10 text-pink-400 group-hover:bg-pink-500 group-hover:text-white transition-all">
+                                        <i data-lucide="layers" class="w-6 h-6"></i>
+                                    </div>
+                                    <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-slate-800 text-brand-accent border border-slate-700">Node.js + Tailwind</span>
+                                </div>
+
+                                <h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-accent transition-colors">Apex Glass UI Kit</h3>
+                                <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mb-4">Système de composants UI complet basé sur le Glassmorphism et l'accessibilité RGAA.</p>
+                                <div class="flex items-center justify-between text-xs pt-3 border-t border-slate-800/80">
+                                    <span class="text-slate-500 flex items-center gap-1"><i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i> 14.2k téléchargements</span>
+                                    <a href="#" class="text-brand-accent font-semibold hover:underline flex items-center gap-1">Voir sur GitHub <i data-lucide="github" class="w-3.5 h-3.5"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: Skills -->
+                    <div id="tab-skills" class="tab-pane hidden space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Skill Bar 1 -->
+                            <div class="glass-card p-4 rounded-xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-semibold text-white flex items-center gap-2">
+                                        <i data-lucide="code-2" class="w-4 h-4 text-brand-500"></i> JavaScript / TypeScript
+                                    </span>
+                                    <span class="text-xs font-mono text-brand-cyan">95%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5">
+                                    <div class="bg-gradient-to-r from-brand-500 to-brand-cyan h-full rounded-full w-[95%] transition-all duration-1000"></div>
+                                </div>
+                            </div>
+
+                            <!-- Skill Bar 2 -->
+                            <div class="glass-card p-4 rounded-xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-semibold text-white flex items-center gap-2">
+                                        <i data-lucide="layout" class="w-4 h-4 text-brand-accent"></i> React / Next.js Framework
+                                    </span>
+                                    <span class="text-xs font-mono text-brand-accent">90%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5">
+                                    <div class="bg-gradient-to-r from-brand-accent to-purple-500 h-full rounded-full w-[90%] transition-all duration-1000"></div>
+                                </div>
+                            </div>
+
+                            <!-- Skill Bar 3 -->
+                            <div class="glass-card p-4 rounded-xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-semibold text-white flex items-center gap-2">
+                                        <i data-lucide="palette" class="w-4 h-4 text-emerald-400"></i> UI/UX Design & CSS Architecture
+                                    </span>
+                                    <span class="text-xs font-mono text-emerald-400">92%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5">
+                                    <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full w-[92%] transition-all duration-1000"></div>
+                                </div>
+                            </div>
+
+                            <!-- Skill Bar 4 -->
+                            <div class="glass-card p-4 rounded-xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-semibold text-white flex items-center gap-2">
+                                        <i data-lucide="server" class="w-4 h-4 text-amber-400"></i> Backend Node.js / GraphQL / SQL
+                                    </span>
+                                    <span class="text-xs font-mono text-amber-400">85%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5">
+                                    <div class="bg-gradient-to-r from-amber-500 to-orange-400 h-full rounded-full w-[85%] transition-all duration-1000"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Skill Tags Pill Cloud -->
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium glass-card hover:border-brand-500 text-slate-300">Tailwind CSS</span>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium glass-card hover:border-brand-500 text-slate-300">Three.js / WebGL</span>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium glass-card hover:border-brand-500 text-slate-300">Docker & CI/CD</span>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium glass-card hover:border-brand-500 text-slate-300">REST & GraphQL API</span>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium glass-card hover:border-brand-500 text-slate-300">Figma to Code</span>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium glass-card hover:border-brand-500 text-slate-300">Jest & Cypress Testing</span>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: Experience Timeline -->
+                    <div id="tab-experience" class="tab-pane hidden space-y-4">
+                        <div class="relative border-l-2 border-slate-800 ml-4 pl-6 space-y-6">
+                            
+                            <!-- Timeline Item 1 -->
+                            <div class="relative">
+                                <span class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-brand-500 ring-4 ring-slate-950"></span>
+                                <span class="text-xs font-mono text-brand-500 font-semibold">2021 - PRÉSENT</span>
+                                <h4 class="text-base font-bold text-white">Lead Front-End Architect</h4>
+                                <p class="text-xs text-slate-400 mb-2">TechCorp Global • Paris</p>
+                                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Direction de l'équipe front-end sur la refonte de la suite SaaS d'entreprise. Réduction de 40% du temps de chargement des pages.</p>
+                            </div>
+
+                            <!-- Timeline Item 2 -->
+                            <div class="relative">
+                                <span class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-brand-accent ring-4 ring-slate-950"></span>
+                                <span class="text-xs font-mono text-brand-accent font-semibold">2018 - 2021</span>
+                                <h4 class="text-base font-bold text-white">Développeur Senior Fullstack</h4>
+                                <p class="text-xs text-slate-400 mb-2">Studio Digital NextGen</p>
+                                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Conception d'applications web sur mesure pour grands comptes et intégration de microservices Node.js.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: Reviews -->
+                    <div id="tab-reviews" class="tab-pane hidden space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="glass-card p-4 rounded-2xl relative">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">
+                                        SL
+                                    </div>
+                                    <div>
+                                        <h5 class="text-sm font-bold text-white">Sophie Laurent</h5>
+                                        <p class="text-xs text-slate-400">Directrice Produit @ Innovate</p>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-slate-300 italic leading-relaxed">"Jean a une vision inégalée de l'ergonomie. Il a transformé notre produit complexe en une interface simple et spectaculaire."</p>
+                            </div>
+
+                            <div class="glass-card p-4 rounded-2xl relative">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center font-bold text-sm">
+                                        MB
+                                    </div>
+                                    <div>
+                                        <h5 class="text-sm font-bold text-white">Marc Bertrand</h5>
+                                        <p class="text-xs text-slate-400">CTO @ DataScale</p>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-slate-300 italic leading-relaxed">"Excellence technique exemplaire et vitesse d'exécution surprenante. Travailler avec Jean a été une vraie réussite."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            
+            <!-- Footer Bar with Social Links -->
+            <div class="px-6 sm:px-10 py-4 bg-slate-950/40 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-4 text-slate-400 text-xs">
+                    <span>© 2026 Jean Dupont</span>
+                    <span>•</span>
+                    <span class="text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Serveur Actif</span>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <a href="#" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all" title="GitHub">
+                        <i data-lucide="github" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all" title="LinkedIn">
+                        <i data-lucide="linkedin" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all" title="Twitter / X">
+                        <i data-lucide="twitter" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all" title="CodePen">
+                        <i data-lucide="codepen" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Interactive Contact Modal -->
+    <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+        <div class="w-full max-w-lg glass-panel gradient-border rounded-3xl p-6 sm:p-8 shadow-2xl transform scale-95 transition-all duration-300" id="contact-modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 rounded-xl bg-brand-500/20 text-brand-500">
+                        <i data-lucide="send" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Envoyer un message</h3>
+                        <p class="text-xs text-slate-400">Réponse garantie sous 24h</p>
+                    </div>
+                </div>
+                <button id="btn-close-modal" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="contact-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1.5">Votre Nom</label>
+                    <input type="text" required placeholder="Ex: Marie Curie" class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500 transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1.5">Adresse Email</label>
+                    <input type="email" required placeholder="marie@exemple.com" class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500 transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1.5">Message</label>
+                    <textarea required rows="4" placeholder="Bonjour Jean, j'aimerais discuter d'un projet..." class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500 transition-colors resize-none"></textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-500 to-brand-accent hover:from-brand-600 hover:to-pink-600 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-500/25 active:scale-95">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <span>Transmettre le Message</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Audio Effects (Web Audio API synthetiseur ultra léger)
+        let audioEnabled = true;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playPopSound(freq = 600, duration = 0.08) {
+            if (!audioEnabled) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + duration);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        document.getElementById('audio-toggle').addEventListener('click', () => {
+            audioEnabled = !audioEnabled;
+            document.getElementById('audio-icon-on').classList.toggle('hidden', !audioEnabled);
+            document.getElementById('audio-icon-off').classList.toggle('hidden', audioEnabled);
+            showToast(audioEnabled ? "Sons activés" : "Sons désactivés", "info");
+        });
+
+        // 3D Card Tilt Effect on Mouse Move
+        const mainCard = document.getElementById('main-card');
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth < 768) return; // Désactiver sur mobile
+            const rect = mainCard.getBoundingClientRect();
+            const cardCenterX = rect.left + rect.width / 2;
+            const cardCenterY = rect.top + rect.height / 2;
+            
+            const mouseX = e.clientX - cardCenterX;
+            const mouseY = e.clientY - cardCenterY;
+            
+            const rotateX = (-mouseY / rect.height) * 8; // Sensibilité X
+            const rotateY = (mouseX / rect.width) * 8;   // Sensibilité Y
+            
+            mainCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        document.addEventListener('mouseleave', () => {
+            mainCard.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+        });
+
+        // Tab Navigation Switcher
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                playPopSound(500);
+                const targetTab = btn.getAttribute('data-tab');
+
+                tabBtns.forEach(b => {
+                    b.classList.remove('text-brand-500', 'border-brand-500');
+                    b.classList.add('text-slate-400', 'border-transparent');
+                });
+
+                btn.classList.add('text-brand-500', 'border-brand-500');
+                btn.classList.remove('text-slate-400', 'border-transparent');
+
+                tabPanes.forEach(pane => {
+                    if (pane.id === targetTab) {
+                        pane.classList.remove('hidden');
+                        pane.classList.add('block');
+                    } else {
+                        pane.classList.add('hidden');
+                        pane.classList.remove('block');
+                    }
+                });
+            });
+        });
+
+        // Interactive Likes + Particle Burst
+        let likeCount = 128;
+        let isLiked = false;
+        const btnLike = document.getElementById('btn-like');
+        const likeCountEl = document.getElementById('like-count');
+        const likeIcon = document.getElementById('like-icon');
+
+        btnLike.addEventListener('click', (e) => {
+            isLiked = !isLiked;
+            if (isLiked) {
+                likeCount++;
+                likeIcon.classList.add('fill-rose-500', 'scale-125');
+                btnLike.classList.add('border-rose-500/50', 'bg-rose-500/20');
+                createParticleBurst(e.clientX, e.clientY);
+                playPopSound(800);
+                showToast("Merci pour votre soutien ! ❤️", "heart");
+            } else {
+                likeCount--;
+                likeIcon.classList.remove('fill-rose-500', 'scale-125');
+                btnLike.classList.remove('border-rose-500/50', 'bg-rose-500/20');
+                playPopSound(400);
+            }
+            likeCountEl.textContent = likeCount;
+        });
+
+        // Follow Button Toggle
+        let isFollowing = false;
+        const btnFollow = document.getElementById('btn-follow');
+        const followText = document.getElementById('follow-text');
+        const followIcon = document.getElementById('follow-icon');
+
+        btnFollow.addEventListener('click', () => {
+            isFollowing = !isFollowing;
+            playPopSound(700);
+            if (isFollowing) {
+                followText.textContent = 'Abonné';
+                followIcon.setAttribute('data-lucide', 'user-check');
+                btnFollow.classList.replace('from-brand-500', 'from-emerald-600');
+                btnFollow.classList.replace('to-brand-600', 'to-teal-600');
+                showToast("Vous suivez maintenant Jean Dupont !", "success");
+            } else {
+                followText.textContent = 'Suivre';
+                followIcon.setAttribute('data-lucide', 'user-plus');
+                btnFollow.classList.replace('from-emerald-600', 'from-brand-500');
+                btnFollow.classList.replace('to-teal-600', 'to-brand-600');
+            }
+            lucide.createIcons();
+        });
+
+        // Contact Modal Toggle
+        const contactModal = document.getElementById('contact-modal');
+        const contactModalContent = document.getElementById('contact-modal-content');
+        const btnOpenContact = document.getElementById('btn-open-contact');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+        const contactForm = document.getElementById('contact-form');
+
+        function openModal() {
+            playPopSound(600);
+            contactModal.classList.remove('opacity-0', 'pointer-events-none');
+            contactModalContent.classList.remove('scale-95');
+            contactModalContent.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            playPopSound(300);
+            contactModal.classList.add('opacity-0', 'pointer-events-none');
+            contactModalContent.classList.remove('scale-100');
+            contactModalContent.classList.add('scale-95');
+        }
+
+        btnOpenContact.addEventListener('click', openModal);
+        btnCloseModal.addEventListener('click', closeModal);
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) closeModal();
+        });
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            playPopSound(900);
+            closeModal();
+            showToast("Votre message a été transmis avec succès !", "success");
+            contactForm.reset();
+        });
+
+        // Share Link functionality
+        document.getElementById('btn-share-main').addEventListener('click', () => {
+            document.execCommand('copy');
+            playPopSound(750);
+            showToast("Lien du profil copié dans le presse-papier !", "info");
+        });
+
+        // Toast Notification System
+        function showToast(message, type = "info") {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `glass-panel px-4 py-3 rounded-2xl text-xs font-semibold text-white flex items-center gap-2.5 shadow-2xl border border-white/20 transform translate-x-10 opacity-0 transition-all duration-300 pointer-events-auto`;
+            
+            let icon = 'info';
+            if (type === 'success') icon = 'check-circle-2';
+            if (type === 'heart') icon = 'heart';
+
+            toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 text-brand-cyan"></i> <span>${message}</span>`;
+            toastContainer.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.classList.remove('translate-x-10', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Particle Canvas System (Stars + Burst Effects)
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function createParticleBurst(x, y) {
+            const colors = ['#6366f1', '#ec4899', '#06b6d4', '#10b981', '#f59e0b'];
+            for (let i = 0; i < 30; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.5) * 12 - 2,
+                    size: Math.random() * 6 + 2,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1,
+                    decay: Math.random() * 0.03 + 0.015
+                });
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= p.decay;
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                if (p.alpha <= 0) particles.splice(index, 1);
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Background Starfield Canvas
+        const bgCanvas = document.getElementById('bg-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let bgStars = [];
+
+        function initBgStars() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+            bgStars = [];
+            for (let i = 0; i < 80; i++) {
+                bgStars.push({
+                    x: Math.random() * bgCanvas.width,
+                    y: Math.random() * bgCanvas.height,
+                    radius: Math.random() * 1.5,
+                    alpha: Math.random() * 0.7 + 0.2,
+                    speed: Math.random() * 0.3 + 0.1
+                });
+            }
+        }
+
+        function animateBgStars() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            bgStars.forEach(star => {
+                star.y -= star.speed;
+                if (star.y < 0) star.y = bgCanvas.height;
+
+                bgCtx.save();
+                bgCtx.globalAlpha = star.alpha;
+                bgCtx.fillStyle = "#ffffff";
+                bgCtx.beginPath();
+                bgCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                bgCtx.fill();
+                bgCtx.restore();
+            });
+            requestAnimationFrame(animateBgStars);
+        }
+        window.addEventListener('resize', initBgStars);
+        initBgStars();
+        animateBgStars();
+
+        // Animated Numeric Counters
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const target = +counter.getAttribute('data-target');
+            const increment = target / 50;
+            
+            const updateCount = () => {
+                const count = +counter.innerText;
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + increment);
+                    setTimeout(updateCount, 25);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            updateCount();
+        });
+
+        // Theme Toggle (Dark / Light)
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            document.documentElement.classList.toggle('light');
+            playPopSound(550);
+        });
+    </script>
+</body>
+</html>
